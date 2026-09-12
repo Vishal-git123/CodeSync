@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import SessionProviderWrapper from "@/modules/auth/components/session-provider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <SessionProviderWrapper>{children}</SessionProviderWrapper>
+        <SessionProviderWrapper>
+          <div className="flex flex-col min-h-screen">
+            <Toaster />
+            <div className="flex-1">{children}</div>
+          </div>
+        </SessionProviderWrapper>
       </body>
     </html>
   );

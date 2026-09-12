@@ -1,7 +1,12 @@
 import React from 'react'
 import  AddNewButton  from "@/modules/auth/dashboard/components/add-new";
 import  AddRepo  from "@/modules/auth/dashboard/components/add-repo";
-import  {getAllPlaygroundForUser} from '@/modules/auth/dashboard/actions';
+import {
+  getAllPlaygroundForUser,
+  deleteProjectById,
+  editProjectById,
+  duplicateProjectById
+} from "@/modules/auth/dashboard/actions";
 import ProjectTable from '@/modules/auth/dashboard/components/project-table';
 // page.tsx
 
@@ -27,9 +32,9 @@ const Page = async () => {
         ) : (
           <ProjectTable
             projects={playgrounds || []}
-            onDeleteProject={deleteProject}
-            onUpdateProject={updateProject}
-            onDuplicateProject={duplicateProject}
+            onDeleteProject={deleteProjectById}
+            onUpdateProject={editProjectById}
+            onDuplicateProject={duplicateProjectById}
           />
         )}
       </div>

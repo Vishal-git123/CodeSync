@@ -24,7 +24,8 @@ model User {
   accounts  Account[]
   sessions  Session[]
   role      UserRole  @default(USER)
-  myPlayground Playground()
+  myPlayground Playground[]
+  staredPlayground StarMark[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -71,14 +72,27 @@ enum Templates{
 }
 
 model Playground {
-  id String @id @default(cuid()) @map("_id");
+  id String @id @default(cuid()) @map("_id")
   title String
   description String?
   template Templates @default(REACT)
-  createdAt DataTime @default(now())
-  updatedAt  DataTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   userId String
   user     User    @relation(fields : [userId],references:[id],onDelete : Cascade)
+  starMarks StarMark[]
+}
+
+model StarMark {
+  id           String     @id @default(cuid()) @map("_id")
+  userId       String
+  playgroundId String
+  isMarked     Boolean
+  createdAt    DateTime   @default(now())
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  playground   Playground @relation(fields: [playgroundId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, playgroundId])
 }
 

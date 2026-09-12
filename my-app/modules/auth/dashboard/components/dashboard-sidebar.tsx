@@ -40,10 +40,11 @@ import Image from "next/image";
 interface PlaygroundData {
   id: string;
   name: string;
-  icon: string;
+  icon: string; // Changed to string
   starred: boolean;
 }
 
+// Map icon names (strings) to their corresponding LucideIcon components
 const lucideIconMap: Record<string, LucideIcon> = {
   Zap: Zap,
   Lightbulb: Lightbulb,
@@ -51,7 +52,8 @@ const lucideIconMap: Record<string, LucideIcon> = {
   Compass: Compass,
   FlameIcon: FlameIcon,
   Terminal: Terminal,
-  Code2: Code2,
+  Code2: Code2, // Include the default icon
+  // Add any other icons you might use dynamically
 };
 
 export function DashboardSidebar({
@@ -60,13 +62,12 @@ export function DashboardSidebar({
   initialPlaygroundData: PlaygroundData[];
 }) {
   const pathname = usePathname();
-
-  const safeData = initialPlaygroundData ?? [];
-
   const [starredPlaygrounds, setStarredPlaygrounds] = useState(
-    safeData.filter((p) => p.starred),
+    initialPlaygroundData.filter((p) => p.starred),
   );
-  const [recentPlaygrounds, setRecentPlaygrounds] = useState(safeData);
+  const [recentPlaygrounds, setRecentPlaygrounds] = useState(
+    initialPlaygroundData,
+  );
 
   return (
     <Sidebar variant="inset" collapsible="icon" className="border-1 border-r">
@@ -80,22 +81,26 @@ export function DashboardSidebar({
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
+                asChild
                 isActive={pathname === "/"}
                 tooltip="Home"
-                render={<Link href="/" />}
               >
-                <Home className="h-4 w-4" />
-                <span>Home</span>
+                <Link href="/">
+                  <Home className="h-4 w-4" />
+                  <span>Home</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
+                asChild
                 isActive={pathname === "/dashboard"}
                 tooltip="Dashboard"
-                render={<Link href="/dashboard" />}
               >
-                <LayoutDashboard className="h-4 w-4" />
-                <span>Dashboard</span>
+                <Link href="/dashboard">
+                  <LayoutDashboard className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -122,12 +127,16 @@ export function DashboardSidebar({
                   return (
                     <SidebarMenuItem key={playground.id}>
                       <SidebarMenuButton
+                        asChild
                         isActive={pathname === `/playground/${playground.id}`}
                         tooltip={playground.name}
-                        render={<Link href={`/playground/${playground.id}`} />}
                       >
-                        {IconComponent && <IconComponent className="h-4 w-4" />}
-                        <span>{playground.name}</span>
+                        <Link href={`/playground/${playground.id}`}>
+                          {IconComponent && (
+                            <IconComponent className="h-4 w-4" />
+                          )}
+                          <span>{playground.name}</span>
+                        </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );
@@ -155,28 +164,27 @@ export function DashboardSidebar({
                     return (
                       <SidebarMenuItem key={playground.id}>
                         <SidebarMenuButton
+                          asChild
                           isActive={pathname === `/playground/${playground.id}`}
                           tooltip={playground.name}
-                          render={
-                            <Link href={`/playground/${playground.id}`} />
-                          }
                         >
-                          {IconComponent && (
-                            <IconComponent className="h-4 w-4" />
-                          )}
-                          <span>{playground.name}</span>
+                          <Link href={`/playground/${playground.id}`}>
+                            {IconComponent && (
+                              <IconComponent className="h-4 w-4" />
+                            )}
+                            <span>{playground.name}</span>
+                          </Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     );
                   })}
               <SidebarMenuItem>
-                <SidebarMenuButton
-                  tooltip="View all"
-                  render={<Link href="/playgrounds" />}
-                >
-                  <span className="text-sm text-muted-foreground">
-                    View all playgrounds
-                  </span>
+                <SidebarMenuButton asChild tooltip="View all">
+                  <Link href="/playgrounds">
+                    <span className="text-sm text-muted-foreground">
+                      View all playgrounds
+                    </span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -186,12 +194,11 @@ export function DashboardSidebar({
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              tooltip="Settings"
-              render={<Link href="/settings" />}
-            >
-              <Settings className="h-4 w-4" />
-              <span>Settings</span>
+            <SidebarMenuButton asChild tooltip="Settings">
+              <Link href="/settings">
+                <Settings className="h-4 w-4" />
+                <span>Settings</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
