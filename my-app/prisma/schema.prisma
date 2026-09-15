@@ -17,18 +17,18 @@ enum UserRole {
 }
 
 model User {
-  id        String    @id @default(cuid()) @map("_id")
-  name      String?
-  email     String    @unique
-  image     String?
-  accounts  Account[]
-  sessions  Session[]
-  role      UserRole  @default(USER)
-  myPlayground Playground[]
+  id               String           @id @default(cuid()) @map("_id")
+  name             String?
+  email            String           @unique
+  image            String?
+  accounts         Account[]
+  sessions         Session[]
+  role             UserRole         @default(USER)
+  myPlayground     Playground[]
   staredPlayground StarMark[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
+  aiConversations  AIConversation[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 }
 
 model Account {
@@ -62,7 +62,7 @@ model Session {
   @@index([userId])
 }
 
-enum Templates{
+enum Templates {
   REACT
   NEXTJS
   EXPRESS
@@ -72,16 +72,19 @@ enum Templates{
 }
 
 model Playground {
-  id String @id @default(cuid()) @map("_id")
-  title String
-  description String?
-  template Templates @default(REACT)
-  createdAt DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id               String           @id @default(cuid()) @map("_id")
+  title            String
+  description      String?
+  template         Templates        @default(REACT)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 
-  userId String
-  user     User    @relation(fields : [userId],references:[id],onDelete : Cascade)
-  starMarks StarMark[]
+  userId           String
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  starMarks        StarMark[]
+  files            PlaygroundFile[]
+  aiConversations  AIConversation[]
 }
 
 model StarMark {
@@ -90,9 +93,58 @@ model StarMark {
   playgroundId String
   isMarked     Boolean
   createdAt    DateTime   @default(now())
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  playground   Playground @relation(fields: [playgroundId], references: [id], onDelete: Cascade)
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  playground Playground @relation(fields: [playgroundId], references: [id], onDelete: Cascade)
 
   @@unique([userId, playgroundId])
 }
 
+model PlaygroundFile {
+  id           String     @id @default(cuid()) @map("_id")
+  name         String
+  path         String
+  content      String
+  language     String?
+  isFolder     Boolean    @default(false)
+
+  playgroundId String
+  playground   Playground @relation(fields: [playgroundId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([playgroundId, path])
+}
+
+model AIConversation {
+  id           String      @id @default(cuid()) @map("_id")
+  title        String      @default("New AI Chat")
+
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  playgroundId String
+  playground   Playground  @relation(fields: [playgroundId], references: [id], onDelete: Cascade)
+
+  messages     AIMessage[]
+
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([playgroundId])
+}
+
+model AIMessage {
+  id             String         @id @default(cuid()) @map("_id")
+  role           String
+  content        String
+
+  conversationId String
+  conversation   AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  createdAt      DateTime       @default(now())
+
+  @@index([conversationId])
+}

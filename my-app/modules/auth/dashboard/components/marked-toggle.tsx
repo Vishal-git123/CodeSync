@@ -1,9 +1,9 @@
-import React from 'react'
+"use client";
 
-function marked-toggle() {
-  return (
-    <div>marked-toggle</div>
-  )
-}
+import React from "react";
 
-export default marked-toggle
+const MarkedToggle = () => {
+  return <div>marked-toggle</div>;
+};
+
+export default MarkedToggle;
