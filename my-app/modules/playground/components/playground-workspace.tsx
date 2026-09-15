@@ -9,6 +9,7 @@ import {
   PanelRight,
   Terminal as TerminalIcon,
   Bot,
+  Share2,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { WebContainer } from "@webcontainer/api";
@@ -26,6 +27,7 @@ import {
   deletePlaygroundFile,
   renamePlaygroundFile,
   savePlaygroundFile,
+  togglePlaygroundPublic,
 } from "../actions";
 
 interface PlaygroundWorkspaceProps {
@@ -77,6 +79,10 @@ const PlaygroundWorkspace = ({
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 
   const [isAIOpen, setIsAIOpen] = useState(false);
+
+  const [isPublic, setIsPublic] = useState(false);
+
+  const [isSharing, setIsSharing] = useState(false);
 
   const [webContainer, setWebContainer] = useState<WebContainer | null>(null);
 
@@ -555,14 +561,7 @@ const PlaygroundWorkspace = ({
   };
 
   /*
-   * AI generated code is applied through the
-   * same code-change handler used by Monaco.
-   *
-   * This means:
-   * - Editor updates
-   * - File becomes dirty
-   * - WebContainer gets updated
-   * - User can manually Save afterwards
+   * AI generated code
    */
   const handleApplyAICode = async (newCode: string) => {
     if (!activeFile) {
@@ -573,6 +572,39 @@ const PlaygroundWorkspace = ({
     await handleCodeChange(newCode);
 
     toast.success("AI code applied to editor");
+  };
+
+  /*
+   * Share / Unshare Preview
+   */
+  const handleSharePreview = async () => {
+    if (isSharing) return;
+
+    try {
+      setIsSharing(true);
+
+      const nextPublic = !isPublic;
+
+      await togglePlaygroundPublic(playgroundId, nextPublic);
+
+      setIsPublic(nextPublic);
+
+      if (nextPublic) {
+        const previewUrl = `${window.location.origin}/preview/${playgroundId}`;
+
+        await navigator.clipboard.writeText(previewUrl);
+
+        toast.success("Preview link copied to clipboard");
+      } else {
+        toast.success("Preview sharing disabled");
+      }
+    } catch (error) {
+      console.error("Share preview error:", error);
+
+      toast.error("Failed to update preview sharing");
+    } finally {
+      setIsSharing(false);
+    }
   };
 
   return (
@@ -606,6 +638,18 @@ const PlaygroundWorkspace = ({
           >
             <Play className="h-4 w-4" />
             Run
+          </button>
+
+          {/* Share Preview */}
+          <button
+            type="button"
+            onClick={handleSharePreview}
+            disabled={isSharing}
+            className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Share2 className="h-4 w-4" />
+
+            {isSharing ? "Sharing..." : isPublic ? "Unshare" : "Share Preview"}
           </button>
 
           {/* Preview */}
@@ -753,6 +797,7 @@ const PlaygroundWorkspace = ({
           <AIAssistant
             code={activeFile.content}
             language={activeFile.language}
+            playgroundId={playgroundId}
             onApplyCode={handleApplyAICode}
           />
         )}

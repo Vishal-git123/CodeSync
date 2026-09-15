@@ -76,6 +76,7 @@ model Playground {
   title            String
   description      String?
   template         Templates        @default(REACT)
+  isPublic         Boolean          @default(false)
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
@@ -109,10 +110,10 @@ model PlaygroundFile {
   isFolder     Boolean    @default(false)
 
   playgroundId String
-  playground   Playground @relation(fields: [playgroundId], references: [id], onDelete: Cascade)
+  playground   Playground  @relation(fields: [playgroundId], references: [id], onDelete: Cascade)
 
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 
   @@unique([playgroundId, path])
 }

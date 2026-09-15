@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db";
 import { currentUser } from "@/modules/auth/actions";
+import { revalidatePath } from "next/cache";
 
 export const getPlaygroundFiles = async (playgroundId: string) => {
   const user = await currentUser();
@@ -575,4 +576,39 @@ export const renameAIConversation = async (
       title: title.trim() || "New AI Chat",
     },
   });
+};
+export const togglePlaygroundPublic = async (
+  playgroundId: string,
+  isPublic: boolean,
+) => {
+  const user = await currentUser();
+
+  if (!user?.id) {
+    throw new Error("Authentication required");
+  }
+
+  const playground = await db.playground.findFirst({
+    where: {
+      id: playgroundId,
+      userId: user.id,
+    },
+  });
+
+  if (!playground) {
+    throw new Error("Playground not found");
+  }
+
+  const updatedPlayground = await db.playground.update({
+    where: {
+      id: playgroundId,
+    },
+    data: {
+      isPublic,
+    },
+  });
+
+  revalidatePath(`/playground/${playgroundId}`);
+  revalidatePath(`/preview/${playgroundId}`);
+
+  return updatedPlayground;
 };

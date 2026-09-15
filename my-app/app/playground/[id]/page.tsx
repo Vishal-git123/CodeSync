@@ -44,18 +44,24 @@ const PlaygroundPage = async ({ params }: PlaygroundPageProps) => {
     redirect("/dashboard");
   }
 
-  const playgroundFiles = await getPlaygroundFiles(id);
+  const playgroundFiles = (
+  await getPlaygroundFiles(id)
+).map((file) => ({
+  ...file,
+  language: file.language ?? "plaintext",
+}));
 
-  return (
-    <main className="h-screen overflow-hidden bg-background">
-      <PlaygroundWorkspace
-        projectTitle={playground.title}
-        projectTemplate={playground.template}
-        playgroundId={playground.id}
-        initialFiles={playgroundFiles}
-      />
-    </main>
-  );
+return (
+  <main className="h-screen overflow-hidden bg-background">
+    <PlaygroundWorkspace
+      projectTitle={playground.title}
+      projectTemplate={playground.template}
+      playgroundId={playground.id}
+      initialFiles={playgroundFiles}
+    />
+  </main>
+);
+  
 };
 
 export default PlaygroundPage;

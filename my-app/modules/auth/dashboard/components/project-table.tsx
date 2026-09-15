@@ -88,6 +88,7 @@ export default function ProjectTable({
   onDuplicateProject,
 }: ProjectTableProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -131,6 +132,7 @@ export default function ProjectTable({
       toast.success("Project updated successfully");
     } catch (error) {
       console.error("Error updating project:", error);
+
       toast.error("Failed to update project");
     } finally {
       setIsLoading(false);
@@ -153,6 +155,7 @@ export default function ProjectTable({
       toast.success("Project deleted successfully");
     } catch (error) {
       console.error("Error deleting project:", error);
+
       toast.error("Failed to delete project");
     } finally {
       setIsLoading(false);
@@ -172,6 +175,7 @@ export default function ProjectTable({
       toast.success("Project duplicated successfully");
     } catch (error) {
       console.error("Error duplicating project:", error);
+
       toast.error("Failed to duplicate project");
     } finally {
       setIsLoading(false);
@@ -183,9 +187,11 @@ export default function ProjectTable({
 
     try {
       await navigator.clipboard.writeText(url);
+
       toast.success("Project URL copied to clipboard");
     } catch (error) {
       console.error("Failed to copy URL:", error);
+
       toast.error("Failed to copy project URL");
     }
   };
@@ -197,9 +203,13 @@ export default function ProjectTable({
           <TableHeader>
             <TableRow>
               <TableHead>Project</TableHead>
+
               <TableHead>Template</TableHead>
+
               <TableHead>Created</TableHead>
+
               <TableHead>User</TableHead>
+
               <TableHead className="w-[80px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -260,41 +270,47 @@ export default function ProjectTable({
                 {/* Actions */}
                 <TableCell>
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-muted"
-                        aria-label={`Open actions for ${project.title}`}
-                      >
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Open project actions</span>
-                      </button>
-                    </DropdownMenuTrigger>
+                    <DropdownMenuTrigger
+                      render={
+                        <button
+                          type="button"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-muted"
+                          aria-label={`Open actions for ${project.title}`}
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Open project actions</span>
+                        </button>
+                      }
+                    />
 
                     <DropdownMenuContent align="end" className="w-52">
                       {/* Open Project */}
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/playground/${project.id}`}
-                          className="flex items-center"
-                        >
-                          <Eye className="mr-2 h-4 w-4" />
-                          Open Project
-                        </Link>
-                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        render={
+                          <Link
+                            href={`/playground/${project.id}`}
+                            className="flex items-center"
+                          >
+                            <Eye className="mr-2 h-4 w-4" />
+                            Open Project
+                          </Link>
+                        }
+                      />
 
                       {/* Open in New Tab */}
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/playground/${project.id}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="flex items-center"
-                        >
-                          <ExternalLink className="mr-2 h-4 w-4" />
-                          Open in New Tab
-                        </Link>
-                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        render={
+                          <Link
+                            href={`/playground/${project.id}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center"
+                          >
+                            <ExternalLink className="mr-2 h-4 w-4" />
+                            Open in New Tab
+                          </Link>
+                        }
+                      />
 
                       <DropdownMenuSeparator />
 
@@ -353,7 +369,6 @@ export default function ProjectTable({
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-            {/* Title */}
             <div className="grid gap-2">
               <Label htmlFor="title">Project Title</Label>
 
@@ -370,7 +385,6 @@ export default function ProjectTable({
               />
             </div>
 
-            {/* Description */}
             <div className="grid gap-2">
               <Label htmlFor="description">Description</Label>
 
