@@ -113,6 +113,9 @@ Powered by **Ollama + Qwen 2.5 Coder**
                          │ AIMessage                  │
                          │ StarMark                   │
                          └────────────────────────────┘
+
+📂 Project Structure
+my-app/
 my-app/
 │
 ├── app/
