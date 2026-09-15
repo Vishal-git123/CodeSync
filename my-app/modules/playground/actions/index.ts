@@ -611,4 +611,4 @@ export const togglePlaygroundPublic = async (
   revalidatePath(`/preview/${playgroundId}`);
 
   return updatedPlayground;
-};
+};  
