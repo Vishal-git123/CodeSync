@@ -113,3 +113,50 @@ Powered by **Ollama + Qwen 2.5 Coder**
                          │ AIMessage                  │
                          │ StarMark                   │
                          └────────────────────────────┘
+my-app/
+│
+├── app/
+│   ├── api/
+│   │   └── ai/
+│   │
+│   ├── dashboard/
+│   │
+│   ├── playground/
+│   │   └── [id]/
+│   │
+│   ├── playgrounds/
+│   │
+│   ├── preview/
+│   │   └── [id]/
+│   │
+│   └── auth/
+│
+├── components/
+│   └── ui/
+│
+├── modules/
+│   ├── auth/
+│   └── playground/
+│       ├── actions/
+│       └── components/
+│
+├── lib/
+│   ├── db.ts
+│   └── template-files.ts
+│
+├── prisma/
+│   └── schema.prisma
+│
+├── public/
+│
+├── package.json
+└── README.md
+👨‍💻 Author
+
+Vishal
+
+GitHub:
+https://github.com/Vishal-git123
+⭐ Support
+
+If you find CodeSync useful, consider giving the repository a ⭐ on GitHub.
